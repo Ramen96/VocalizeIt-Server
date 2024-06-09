@@ -40,10 +40,13 @@ app.post('/register', (req, res) => {
     db('users').insert({
         email: email,
         firstname: firstname,
-        lastname: lastame,
+        lastname: lastname,
         joined: new Date()
-    }).then(console.log)
-    res.json('It works');
+    })
+    .then(user => {
+        res.json(user[0]);
+    })
+    .catch(err => res.status(400).json(err))
 })
 
 app.get('profile/:id', (req, res) => {
