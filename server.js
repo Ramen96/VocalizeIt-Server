@@ -46,7 +46,7 @@ app.post('/register', (req, res) => {
     .then(user => {
         res.json(user[0]);
     })
-    .catch(err => res.status(400).json(err))
+    .catch(err => res.status(400).json('Error: unable to join'))
 })
 
 app.get('profile/:id', (req, res) => {
