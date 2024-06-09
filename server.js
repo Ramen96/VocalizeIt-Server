@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const bycrpt = require('bcrypt-nodejs');
+const bcrypt = require('bcrypt-nodejs');
 const cors = require('cors');
 const knex = require('knex');
 
@@ -9,9 +9,9 @@ const db = knex({
     connection: {
         host: '127.0.0.1',
         port: '5432',
-        user: 'your_username',
-        database: 'vocalizeit',
-        password: 'your_passord'
+        user: 'username',
+        database: 'password',
+        password: 'tr33hosue'
     },
 });
 
@@ -35,11 +35,12 @@ app.post('/signin', (req, res) => {
 })
 
 app.post('/register', (req, res) => {
-    const { email, firstName, lastName} = req.body;
+    const { email, firstname, lastname} = req.body;
+    console.log('req.body:', req.body)
     db('users').insert({
         email: email,
-        firstname: firstName,
-        lastname: lastName,
+        firstname: firstname,
+        lastname: lastname,
         joined: new Date()
     }).then(console.log)
     res.json('It works');
