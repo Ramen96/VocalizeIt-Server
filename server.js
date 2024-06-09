@@ -10,8 +10,8 @@ const db = knex({
         host: '127.0.0.1',
         port: '5432',
         user: 'username',
-        database: 'password',
-        password: 'tr33hosue'
+        database: 'vocalizeit',
+        password: 'password'
     },
 });
 
@@ -40,7 +40,7 @@ app.post('/register', (req, res) => {
     db('users').insert({
         email: email,
         firstname: firstname,
-        lastname: lastname,
+        lastname: lastame,
         joined: new Date()
     }).then(console.log)
     res.json('It works');
