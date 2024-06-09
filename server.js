@@ -2,44 +2,23 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const bycrpt = require('bcrypt-nodejs');
 const cors = require('cors');
-const kenx = require('knex');
+const knex = require('knex');
 
-const database = kenx({
+const db = knex({
     client: 'pg',
     connection: {
-      host: '127.0.0.1',
-      port: 5432,
-      user: 'username',
-      password: 'your_password',
-      database: 'vocalizeit_db',
+        host: '127.0.0.1',
+        port: '5432',
+        user: 'your_username',
+        database: 'vocalizeit',
+        password: 'your_passord'
     },
-  });
-
-database.select("*").from('users').then(data => console.log(data));
+});
 
 const app = express();
 
 app.use(cors());
 app.use(bodyParser.json());
-
-// const database = {
-//     users: [
-//         {
-//             id: '123',
-//             name: 'john',
-//             email: 'john@gmail.com',
-//             password: 'password',
-//             joined: new Date()
-//         },
-//         {
-//             id: '124',
-//             name: 'Sally',
-//             email: 'sally@gmail.com',
-//             password: 'password123',
-//             joined: new Date()
-//         }
-//     ]
-// }
 
 app.get('/', (req, res) => {
     res.send('this is working');
@@ -56,13 +35,14 @@ app.post('/signin', (req, res) => {
 })
 
 app.post('/register', (req, res) => {
+    const { email, firstName, lastName} = req.body;
     db('users').insert({
         email: email,
-        firstName: firstName,
-        lastName: lastName,
+        firstname: firstName,
+        lastname: lastName,
         joined: new Date()
     }).then(console.log)
-    res.json(database.users[database.users.length-1]);
+    res.json('It works');
 })
 
 app.get('profile/:id', (req, res) => {
