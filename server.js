@@ -11,7 +11,7 @@ const db = knex({
         port: '5432',
         user: 'username',
         database: 'vocalizeit',
-        password: 'password'
+        password: 'your_password'
     },
 });
 
@@ -49,15 +49,17 @@ app.post('/register', (req, res) => {
     .catch(err => res.status(400).json('Error: unable to join'))
 })
 
-app.get('profile/:id', (req, res) => {
+app.get('/profile/:id', (req, res) => {
     const { id } = req.params;
-    let found = false;
-    database.users.forEach(user => {
-        if (user.id === id) {
-            found = true;
-            return res.json(user)
-        }
-    });
+    db.select('*').from('users').where({ id })
+    .then(users => {
+        if (users.length) {
+            res.json(users[0])
+        } else {
+            res.json('Not found')
+        }   
+    })
+    .catch(err => res.json('Not found error getting user'))
 })
 
 app.listen(3000, () => {
