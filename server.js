@@ -11,7 +11,7 @@ const db = knex({
         port: '5432',
         user: 'username',
         database: 'vocalizeit',
-        password: 'your_password'
+        password: 'password'
     },
 });
 
@@ -26,26 +26,49 @@ app.get('/', (req, res) => {
 
 
 app.post('/signin', (req, res) => {
-    if (req.body.email === database.users[0].email &&
-        req.body.password === database.users[0].password) {
-            res.json('success');
-        } else {
-            res.status(400).json('error logging in');
-        }
+    db.select('email', 'hash').from('login')
+        .where('email', '=', req.body.email)
+        .then(data => {
+            const isValid  = bcrypt.compareSync(req.body.password, data[0].hash)
+            isValid ?
+                db.select('*').from('users')
+                    .where('email', '=', req.body.email)
+                    .then(user => {
+                        res.json(user[0])
+                    })
+                    .catch(err => res.status(400).json('unable to get user'))
+            :
+            res.status(400).json('invalid credentaials')
+            
+        })
+        .catch(err => res.status(400).json('wrong credentaials'))
 })
 
 app.post('/register', (req, res) => {
-    const { email, firstname, lastname} = req.body;
-    console.log('req.body:', req.body)
-    db('users').insert({
-        email: email,
-        firstname: firstname,
-        lastname: lastname,
-        joined: new Date()
-    })
-    .then(user => {
-        res.json(user[0]);
-    })
+
+    const { email, firstname, lastname, password} = req.body;
+    const hash =  bcrypt.hashSync(password);
+
+    db.transaction(trx => {
+        trx.insert({ hash, email})
+        .into('login')
+        .returning('email')
+        .then(loginEmail => {
+            return db('users')
+                .returning('*')
+                .insert({
+                    email: loginEmail[0].email,
+                    firstname: firstname,
+                    lastname: lastname,
+                    joined: new Date()
+                })
+                .then(user => {
+                    res.json(user[0]);
+                })
+            })
+            .then(trx.commit)
+            .catch(trx.rollback)
+        })
     .catch(err => res.status(400).json('Error: unable to join'))
 })
 
