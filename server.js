@@ -3,7 +3,6 @@ const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt-nodejs');
 const cors = require('cors');
 const knex = require('knex');
-const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
 const signin = require('./controllers/signin');
 const register = require('./controllers/register');
