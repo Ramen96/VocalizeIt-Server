@@ -1,10 +1,12 @@
+require('dotenv').config();
 const api = async (req, res, db, bcrypt) => {
+
     const { email, password, voiceId, text } = req.body;
     const options = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          "xi-api-key": "your api key"
+          "xi-api-key": process.env.API_KEY
         },
         body: JSON.stringify({
           text: text,
