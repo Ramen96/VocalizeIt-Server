@@ -12,11 +12,11 @@ const api = require('./controllers/api');
 const db = knex({
     client: 'pg',
     connection: {
-        host: '127.0.0.1',
+        host: process.env.DB_URL,
         port: '5432',
         user: 'eric',
         database: 'vocalizeit',
-        password: ''
+        password: process.env.DB_PASSWORD
     },
 });
 
